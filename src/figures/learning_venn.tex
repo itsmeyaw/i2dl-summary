@@ -1,0 +1,25 @@
+\PassOptionsToPackage{svgnames}{xcolor}
+\documentclass[tikz]{standalone}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usetikzlibrary{positioning}
+\usetikzlibrary{math}
+\usetikzlibrary{calc}
+\usetikzlibrary{shapes.symbols}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{shapes.multipart}
+
+\begin{document}
+    \begin{tikzpicture}[every text node part/.style={align=center}]
+        \draw[draw=black] (0,0) circle (3);
+        \draw[draw=black] (0,-0.5) circle (2);
+        \draw[draw=black] (0,-1) circle (1);
+
+
+        \node at (0,2) {Artificial Intelligence};
+        \node at (0,0.5) {Machine Learning};
+        \node at (0,-1) {Deep \\ Learning};
+    \end{tikzpicture}
+\end{document}

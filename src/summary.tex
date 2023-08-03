@@ -1,24 +1,224 @@
 \documentclass[10pt]{article}
 \usepackage{NotesTeXV3}
+\usepackage{float}
+\usepackage{cleveref}
 
-\title{Note:\\Introduction into Deep Learning (IN2346)\\\vspace{0.5em}\large{\textit{The Art of Teaching Sands to Think}}}
+\title{Summary:\\
+    Introduction into Deep Learning (IN2346)
+    \\
+    \large{\textit{The Art of Teaching Sands to Think\textsuperscript{TM}}}
+    \\\vspace{0.5em}
+    \small{Based on lecture of Prof. Niessner}
+    }
 \author{Yudhistira Arief Wibowo}
 
 \begin{document}
 
 \maketitle
 
+\newpage 
+
+\section*{Preface}
+
+Hi, I made this note in hope to make me reminds myself in case I forget or have to re-learn I2DL. 
+The content of this note is mostly taken from the lecture presentation from Prof. Niessner for 
+the lecture IN2346 at TUM (as summer 2023). However, there might be slight mistakes in the content.
+In case of that, please contact me. This note also shall be open-source available, thus you can 
+create a merge request on the repository of this note.
+
+Throughout the note, we will use several symbols. Similar to the lecture, we will use bold symbol 
+to represent a matrix of its corresponding normal symbol. For example, $\pmb\theta$ is the matrix 
+that contains bunch of values $\theta$.
+
 \newpage
 
 \section{Introduction}
 
+Before beginning with the concept of deep learning, we want
+to familiarize ourselves with the underlying concept of intelligence
+itself. In the area of intelligence, there are 3 big terminologies
+that categorize it. They are:
+
+
+\begin{enumerate}
+    \item \textbf{Artificial Intelligence}: Broad definitions, covers 
+        any "smart" algorithm including \texttt{if} statements, 
+        binary search, Dijkstra algorithm, etc. 
+    \item \textbf{Machine Learning}: Performing learn on data, includes 
+        linear regression, logistic regression, support vector 
+        machines, etc.
+    \item \textbf{Deep Learning}: Use neural networks, includes multi-layer
+        perceptons, CNN, RNN, Transformer, etc. 
+\end{enumerate}
+
+\begin{marginfigure}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\textwidth]{figures/learning_venn.pdf}
+        \caption{The Venn diagram describing the coverage of each term}
+    \end{figure}
+\end{marginfigure}
+
+\newpage
+
 \section{Machine Learning}
+
+Machine learning able to perform several types of task. These tasks 
+usually can be divided into two types of learning methods:
+
+\begin{enumerate}
+    \item \textbf{Supervised} learning: The dataset contains the ground 
+        truth label. Examples are:
+        \begin{itemize}
+            \item Regression 
+            \item Classification
+        \end{itemize}
+    \item \textbf{Unsupervised} learning: The dataset does \textbf{not}
+        contain ground truth label. Examples are:
+        \begin{itemize}
+            \item (k-means) Clustering
+            \item Principal Component Analysis (PCA)
+        \end{itemize}
+\end{enumerate}
+
+The one that will perform the task is called a \textbf{model} $M$. It 
+will train itself using the \textbf{dataset}. This dataset 
+contains \textbf{data points} $x$ and may have \textbf{ground truth label}
+$y$. $M$ performs mathematical calculation on the dataset. $M$ 
+has its own \textbf{parameters} $\theta$, which define the mathematical behavior of 
+its component.
+
+$M$ needs to learn based on the given input the most suitable output for given 
+task. But how it will be able to learn at all? For simple task, such as linear 
+regression, we can compute the solution using a certain formula. However,
+more complex tasks requires several steps to be performed 
+multiple times to approximate the result, which is called 
+\textbf{iterative method}.
+
+In iterative method, we need to update our model to 
+improve its performance. This is called \textbf{optimization}. 
+But what change shall be made to the model? To know this we need 
+a metric called \textbf{loss function}. Loss function measures 
+how good the estimation of the model and tells the optimization 
+method how to make it better.
 
 \subsection{Regressions}
 
-\subsection{Maximum Likelihood}
+A regression task is a task where the model shall \textbf{predict a 
+continuous output} value (e.g., temperature of a room). In the lecture, 
+we discussed a regression algorithm, it is \textbf{linear} regression.
+In linear regression, we want to \textbf{find a linear model} that explains a target $y$
+given inputs $x$. 
+
+\begin{definition}
+    For input $x_i$ with a dimension of $d$ and features $x_{ij}$, a linear model with 
+    weights $\theta_j$ and bias $\theta_0$ for producing prediction $y_i$ is expressed in the form 
+    \begin{equation*}
+        \hat{y}_i = \sum_{j=1}^d x_{ij} \theta_j + \theta_0
+    \end{equation*}
+    or in matrix form 
+    \marginnote{The additional 1 in each row in the matrix $\mathbf{X}$ exists to be multiplied with the bias $\theta_0$.}
+    \begin{equation*}
+        \mathbf{\hat{y}} = \mathbf{X} \pmb{\theta} \quad \text{or} \quad
+        \left(\begin{matrix}
+            \hat{y}_1 \\ \hat{y}_2 \\ \vdots \\ \hat{y}_n
+        \end{matrix}\right) = 
+        \left(\begin{matrix}
+            1 & x_{11} & \dots & x_{1d} \\
+            \vdots & \vdots & \ddots & \vdots \\
+            1 & x_{n1} & \dots & x_{nd}
+        \end{matrix}\right) 
+        \left(\begin{matrix}
+            \theta_0 \\ \theta_1 \\ \vdots \\ \theta_d
+        \end{matrix}\right)
+    \end{equation*}
+\end{definition} 
+
+To know how good or bad we fit our linear model to the dataset, 
+we use loss function.
+
+\begin{definition}
+    For a linear regression with parameters $\pmb\theta$, the loss function $J$ 
+    is defined as follows:
+    \begin{equation*}
+        J(\pmb\theta) = \frac{1}{n} \sum_{i=1}^n (\hat{y}_i - y_i)^2
+    \end{equation*}
+\end{definition}
+
+In order to optimize the model, we need to find the correct parameter $\theta$ 
+that minimize the value $J(\pmb\theta)$. This problem is called the \textbf{Linear 
+Least Squares Estimates}. Fortunately, this is a \textbf{convex 
+problem}, meaning that there exists a closed-form unique solution. Hence,
+we don't need any iterative method.
+
+\begin{definition}
+    For a loss function $J(\pmb\theta)$, the value of $\theta$ that minimizes
+    the loss is 
+    \begin{equation*}
+        \arg\min_\theta J(\pmb\theta) = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y} 
+    \end{equation*} 
+\end{definition}
+
+The lost function calculated before is also the same as finding the
+\textbf{Maximal Likelihood Estimate} (given our training samples are independent
+and equally distributed).
+
+\subsection{Classification}
+
+A classification algorithm, as the name describe, is an algorithm that 
+tries to classify a certain data into two or more categories. In the lecture,
+we discuss the \textbf{logistic regression}\mn{
+    Despite its name, the logistic regression is a classification 
+    algorithm (and not a regression algorithm in context of machine learning).
+}
+algorithm to help us
+perform classification over 2 classes (e.g., a cat or not a cat). 
+Since it can classify into exactly two classes, we call it as 
+a \textbf{binary classification}.
+
+A logistic regression algorithm uses the \textbf{sigmoid function} $\sigma$ 
+to map values of the data into value between zero and one. 
+
+\begin{definition}
+    A sigmoid function $\sigma$ for a value $x$ is defined as follows:
+    \begin{equation*}
+        \sigma(x) = \frac{1}{1 + e^{-x}}
+    \end{equation*}
+\end{definition}
+
+Since the value of the sigmoid function is between zero and one, we can 
+interpret this value as a probability. To use this sigmoid function 
+for our classification task, we perform weighted sum of the 
+data $\mathbf{X}$ (with our weights $\pmb{\theta}$)
+\begin{marginfigure}
+    \begin{figure}[H]
+        \includegraphics{figures/logistic_regression.pdf}
+        \caption{An example of logistic regression}
+    \end{figure}
+\end{marginfigure}
+and use this 
+as the input of the sigmoid function.
+
+As a performance measurement, we can use the \textbf{Binary 
+Cross-Entropy (BCE) loss} function.
+
+\begin{definition}
+    The BCE loss of a prediction $\hat{y}_i$ for ground truth label $y_i$ 
+    is defined as follows:
+    \begin{equation*}
+        \mathcal{L}(\hat{y}_i, y_i) = - \left[ y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i) \right]
+    \end{equation*}
+\end{definition}
+
+To find the optimal values of $\theta$, we cannot simply use formula 
+like in linear regression since there is no closed-form solution 
+for this problem. To circumvent this, we use the gradient decent 
+algorithm discussed in \cref{sec:optimization:sub:gradientdecent}.
+
 
 \section{Deep Learning Basic}
+
+% Explain tasks in Deep Learning
 
 \subsection{Layer}
 
@@ -31,6 +231,7 @@
 \subsection{Backpropagation}
 
 \subsection{Gradient Decent}
+\label{sec:optimization:sub:gradientdecent}
 
 \subsubsection{Stochastic Gradient Decent}
 
@@ -46,10 +247,12 @@
 
 \subsection{Data Processing}
 % Splitting etc.
+% Cross validation
 
 \subsection{Hyperparameter}
 
 \subsection{Common Challenge}
+
 % Underfitting etc.
 
 \subsection{Weight Initialization}
@@ -58,7 +261,9 @@
 
 \subsubsection{Dropout}
 
-\subsection{Batch Normalization}
+\subsubsection{Batch Normalization}
+
+\subsubsection{Data Augmentation}
 
 \section{Convolutional Neural Network}
 
@@ -85,6 +290,9 @@
 \subsection{U-Net}
 
 \section{Sequential Data Deep Learning Architectures}
+
+% Explain what does these model for
+% Explain example of examples of sequential data 
 
 \subsection{Recurrent Neural Network (RNN)}
 
